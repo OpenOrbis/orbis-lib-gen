@@ -1,0 +1,68 @@
+name: libs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Library stubs
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Set up release directory
+      run: |
+        mkdir release
+
+    - name: Fetch ps4libdoc
+      uses: actions/checkout@v2
+      with:
+        repository: idc/ps4libdoc
+        path: ps4libdoc
+        ref: 5.05
+
+    - name: Generate library stub sources
+      run: python generate.py ps4libdoc/system/common/lib
+
+    - name: Generate makefile
+      run: python gen_makefile.py
+
+    - name: Build library stubs
+      run: cd build && make
+
+    - name: Create tarball
+      run: |
+        cp -r build/out release/lib && cd release
+        tar -cvzf lib.tar.gz lib/*
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Automated build.
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./release/lib.tar.gz
+        asset_name: lib.tar.gz
+        asset_content_type: application/gzip
