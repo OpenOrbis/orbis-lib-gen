@@ -3,6 +3,7 @@ import sys, os, json
 from os import listdir
 from os.path import isfile, join
 
+os.makedirs("build/out")
 makefile = open("build/Makefile", "w")
 
 makefileProgramList = ''
@@ -20,8 +21,8 @@ for sourceFile in librarySourceFiles:
 
 		# Add rule for this program
 		makefileRuleList += programName + ": " + sourceFile + "\n"
-		makefileRuleList += "\tgcc -ffreestanding -nostdlib -fno-builtin -fPIC -c " + sourceFile + " -o build/" + programName + ".o\n"
-		makefileRuleList += "\tgcc -shared -ffreestanding -nostdlib -fno-builtin build/" + programName + ".o -o build/lib/" + programName + ".so\n"
+		makefileRuleList += "\tgcc -ffreestanding -nostdlib -fno-builtin -fPIC -c " + sourceFile + " -o " + programName + ".o\n"
+		makefileRuleList += "\tgcc -shared -ffreestanding -nostdlib -fno-builtin " + programName + ".o -o out/" + programName + ".so\n"
 		makefileRuleList += "\n\n"
 
 makefileSource = "all: " + makefileProgramList + "\n\n"
