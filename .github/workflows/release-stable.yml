@@ -41,6 +41,7 @@ jobs:
     - name: Create tarball
       run: |
         cp -r build/out release/lib && cd release
+        rm lib/libc.so
         tar -cvzf lib.tar.gz lib/*
         
     - name: Create Release
