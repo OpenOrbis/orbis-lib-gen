@@ -171,7 +171,7 @@ for jsonFile in os.listdir(input_idc_file_loc):
 
 			module_name = input_sprx_content["modules"][0]["name"]
 
-			if module_name in json_list:
+			if module_name in json_list and jsonFile != "libkernel_sys.sprx.json":
 				print("[HONEYPOT] " + module_name + " has already been parsed and generated\n")
 			else:
 				json_list.append(module_name)
