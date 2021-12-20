@@ -184,6 +184,11 @@ for jsonFile in os.listdir(input_idc_file_loc):
 					lib_is_export = modLibrary["is_export"]
 					lib_symbols = modLibrary["symbols"]
 					
+					# Special check for libkernel_sys variant
+					if lib_name == "libkernel":
+						if "libkernel_sys" in jsonFile:
+							lib_name = "libkernel_sys"
+					
 					print("[LIBRARY_DETECTED] : " + lib_name + "\n")
 					
 					if lib_is_export:
