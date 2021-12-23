@@ -157,7 +157,7 @@ else:
 input_idc_file_loc = sys.argv[1]
 print("Stub Documentation File Location : " + sys.argv[1] + "\n")
 
-json_list = []
+json_list = set()
 
 
 for jsonFile in os.listdir(input_idc_file_loc):
@@ -171,10 +171,14 @@ for jsonFile in os.listdir(input_idc_file_loc):
 
 			module_name = input_sprx_content["modules"][0]["name"]
 
+			if module_name == "libkernel":
+				if "libkernel_sys" in jsonFile:
+					module_name = "libkernel_sys"
+
 			if module_name in json_list and jsonFile != "libkernel_sys.sprx.json":
 				print("[HONEYPOT] " + module_name + " has already been parsed and generated\n")
 			else:
-				json_list.append(module_name)
+				json_list.add(module_name)
 				xcount = 0
 				print("Module : " + module_name + " - Generating Stub for this prx!\n")
 				
