@@ -175,7 +175,7 @@ for jsonFile in os.listdir(input_idc_file_loc):
 				if "libkernel_sys" in jsonFile:
 					module_name = "libkernel_sys"
 
-			if module_name in json_list and jsonFile != "libkernel_sys.sprx.json":
+			if module_name in json_list:
 				print("[HONEYPOT] " + module_name + " has already been parsed and generated\n")
 			else:
 				json_list.add(module_name)
