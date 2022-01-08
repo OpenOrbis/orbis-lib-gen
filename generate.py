@@ -72,7 +72,7 @@ def printHelp():
 	
 
 # Generate Asm Function
-def genAsm(inSymbols, xmodule_name):
+def genAsm(inSymbols, xmodule_name, module_name):
 	
 	prxFilelist = list()
 
@@ -99,8 +99,10 @@ def genAsm(inSymbols, xmodule_name):
 	headerPath = fixedName + ".h"
 	
 	xsource_content_temp = xsource_content_temp.replace("%%header_string%%", xheader_filename)
+
+	# Maybe optimized this so that it doesn't show up if they are both the same?
+	xsource_content_temp = xsource_content_temp.replace("%%module_name%%", module_name)
 	
-		
 	for prxSyms in inSymbols:
 		
 		if prxSyms["name"] is None:
@@ -196,7 +198,7 @@ for jsonFile in os.listdir(input_idc_file_loc):
 					print("[LIBRARY_DETECTED] : " + lib_name + "\n")
 					
 					if lib_is_export:
-						genAsm(lib_symbols, lib_name)
+						genAsm(lib_symbols, lib_name, module_name)
 					else:
 						print("IS_EXPORT (FALSE) -> No lib for " + lib_name + "\n")
 
