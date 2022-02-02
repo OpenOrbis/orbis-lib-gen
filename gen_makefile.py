@@ -22,7 +22,7 @@ for sourceFile in librarySourceFiles:
 		# Add rule for this program
 		makefileRuleList += programName + ": " + sourceFile + "\n"
 		makefileRuleList += "\tgcc -ffreestanding -nostdlib -fno-builtin -fPIC -c " + sourceFile + " -o " + programName + ".o\n"
-		makefileRuleList += "\tgcc -shared -ffreestanding -nostdlib -fno-builtin " + programName + ".o -o out/" + programName + ".so\n"
+		makefileRuleList += "\tgcc -shared -ffreestanding -nostdlib -fno-builtin -fPIC " + programName + ".o -o out/" + programName + ".so\n"
 		makefileRuleList += "\n\n"
 
 makefileSource = "all: " + makefileProgramList + "\n\n"
