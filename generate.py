@@ -63,6 +63,13 @@ ignore_jsons = ["custom_video_core.elf.json",
 				"WebProcess.self.json",
 				"websocket-sharp.dll.sprx.json"]
 
+rename_jsons = {
+	("libkernel", "libkernel_sys"): "libkernel_sys",
+	("libSceFreeType", "libSceFreeTypeSubFunc"): "libSceFreeTypeSubFunc",
+	("libSceFreeType", "libSceFreeTypeOptOl"): "libSceFreeTypeOptOl",
+	("libSceFreeType", "libSceFreeTypeHinter"): "libSceFreeTypeHinter",
+}
+
 msCount = 0
 
 # Print Help Function
@@ -170,10 +177,10 @@ for jsonFile in os.listdir(input_idc_file_loc):
 			input_sprx_content = json.load(codecs.open(input_idc_file_loc + "/" + jsonFile, 'r', 'utf-8-sig'))
 
 			module_name = input_sprx_content["modules"][0]["name"]
+			json_name = jsonFile[:-10] # strip .sprx.json
 
-			if module_name == "libkernel":
-				if "libkernel_sys" in jsonFile:
-					module_name = "libkernel_sys"
+			if (module_name, json_name) in rename_jsons:
+				module_name = rename_jsons[(module_name, json_name)]
 
 			if module_name in json_list:
 				print("[HONEYPOT] " + module_name + " has already been parsed and generated\n")
@@ -188,11 +195,10 @@ for jsonFile in os.listdir(input_idc_file_loc):
 					lib_is_export = modLibrary["is_export"]
 					lib_symbols = modLibrary["symbols"]
 					
-					# Special check for libkernel_sys variant
-					if lib_name == "libkernel":
-						if "libkernel_sys" in jsonFile:
-							lib_name = "libkernel_sys"
-					
+					# Rename colliding libs
+					if (lib_name, json_name) in rename_jsons:
+						lib_name = rename_jsons[(lib_name, json_name)]
+
 					print("[LIBRARY_DETECTED] : " + lib_name + "\n")
 					
 					if lib_is_export:
